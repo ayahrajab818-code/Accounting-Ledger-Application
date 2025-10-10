@@ -15,11 +15,17 @@ public class ConsoleHelper {
     }
 
     public static double promptForDouble(String prompt) {
-        System.out.print(prompt + ": ");
-        double result = scanner.nextDouble();
-        scanner.nextLine();
-        return result;
+        while (true) {
+            try {
+                System.out.print(prompt + ": ");
+                String input = scanner.nextLine();
+                return Double.parseDouble(input);  // Convert text to double
+            } catch (NumberFormatException e) {
+                System.out.println(" Invalid input! Please enter a number");
+            }
+        }
     }
+
 
     public static String promptForString(String prompt) {
         System.out.print(prompt + ": ");
