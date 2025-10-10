@@ -41,7 +41,6 @@ public class ConsoleHelper {
             }
             catch(Exception ex){
                 System.out.println("Invalid Entry, please enter a valid date (YYYY-MM-DD)");
-                //ex.printStackTrace();
             }
         }
     }
@@ -50,9 +49,9 @@ public class ConsoleHelper {
             try {
                 System.out.print(prompt + ": ");
                 String timeAsString = scanner.nextLine();
-                return LocalTime.parse(timeAsString); // expects format HH:MM or HH:MM:SS
+                return LocalTime.parse(timeAsString);
             } catch (Exception ex) {
-                System.out.println("Invalid Entry, please enter a valid time (HH:MM or HH:MM:SS)");
+                System.out.println("Invalid Entry, please enter a valid time (HH:MM:SS)");
             }
         }
     }
