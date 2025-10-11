@@ -204,10 +204,15 @@ public class homeScreen {
     //Show all transactions from this month
     private static void showMonthToDate() {
         System.out.println("Month to date Transactions:");
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now();// Get today's date
 
+        //Go through each transaction in the list
         for (Transaction t : transactions) {
+
+            // Check if the transaction happened in the current year AND current month
             if (t.getDate().getYear() == today.getYear() && t.getDate().getMonth() == today.getMonth()) {
+
+                // Print the transaction if it matches
                 System.out.println(t);
             }
         }
@@ -234,8 +239,11 @@ public class homeScreen {
     //Show all transactions from this year
     private static void showYearToDate() {
         System.out.println("Year-To-Date Transactions:");
+
+        //This line gets the current year so the program can filter transactions that happened this year only.
         int currentYear = LocalDate.now().getYear();
 
+        //Go through all transactions and print only the ones from this year
         for (Transaction t : transactions) {
             if (t.getDate().getYear() == currentYear) {
                 System.out.println(t);
@@ -247,6 +255,8 @@ public class homeScreen {
     //Show all transactions from the previous year
     private static void showPreviousYear() {
         System.out.println("Previous Year Transactions:");
+
+        //Get the previous year
         int lastYear = LocalDate.now().getYear() - 1;
 
         for (Transaction t : transactions) {
@@ -287,6 +297,7 @@ public class homeScreen {
 
             String lineFromFile;
 
+            // Read each line from the file until the end is reached
             while ((lineFromFile = br.readLine()) != null) {
                 if (lineFromFile.startsWith("date")) continue;//This helps to skip the header row in the transactions.cvs file
 
@@ -316,6 +327,8 @@ public class homeScreen {
 
     //Save a single transaction to the CSV file
     private static void saveTransaction(Transaction t) {
+
+        //Open the file to add new transactions and write lines to it (true = append mode, so existing data is not erased)
         try (FileWriter fw = new FileWriter("transactions.csv", true);
              PrintWriter pw = new PrintWriter(fw)) {
 
