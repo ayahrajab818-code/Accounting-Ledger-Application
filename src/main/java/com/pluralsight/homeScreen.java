@@ -97,7 +97,7 @@ public class homeScreen {
                 R) Reports
                 H) Home
                 """;
-
+        // As long as it true it will keep showing the menu until the user chooses to exit
         while (true) {
             System.out.println(ledgerMenu);
             String command = ConsoleHelper.promptForString("Enter your command (A, D, P, R, H)").toUpperCase();
@@ -169,7 +169,7 @@ public class homeScreen {
             5) Search by Vendor
             0) Back
             """;
-
+        // As long as it true it will keep showing the menu until the user chooses to exit
         while (true) {
             System.out.println(reportsMenu);
             String command = ConsoleHelper.promptForString("Enter your command (1, 2, 3, 4, 5, 0)");
@@ -203,28 +203,77 @@ public class homeScreen {
 
     //Show all transactions from this month
     private static void showMonthToDate() {
+        System.out.println("Month to date Transactions:");
+        LocalDate today = LocalDate.now();
+
+        for (Transaction t : transactions) {
+            if (t.getDate().getYear() == today.getYear() && t.getDate().getMonth() == today.getMonth()) {
+                System.out.println(t);
+            }
+        }
     }
 
 
     //Show all transactions from the previous month
     private static void showPreviousMonth() {
+        System.out.println("Previous Month Transactions:");
+
+        //Get the date exactly one month before today
+        LocalDate lastMonth = LocalDate.now().minusMonths(1);
+
+        //Check each transaction and print it if it happened in the previous month
+        for (Transaction t : transactions) {
+            if (t.getDate().getYear() == lastMonth.getYear() && t.getDate().getMonth() == lastMonth.getMonth()) {
+                System.out.println(t);
+            }
+
+        }
     }
 
 
     //Show all transactions from this year
     private static void showYearToDate() {
+        System.out.println("Year-To-Date Transactions:");
+        int currentYear = LocalDate.now().getYear();
+
+        for (Transaction t : transactions) {
+            if (t.getDate().getYear() == currentYear) {
+                System.out.println(t);
+            }
+        }
     }
 
 
     //Show all transactions from the previous year
     private static void showPreviousYear() {
+        System.out.println("Previous Year Transactions:");
+        int lastYear = LocalDate.now().getYear() - 1;
+
+        for (Transaction t : transactions) {
+            if (t.getDate().getYear() == lastYear) {
+                System.out.println(t);
+            }
+        }
     }
 
 
     //Search by vendor name
     private static void searchByVendor() {
+        String vendor = ConsoleHelper.promptForString("Enter vendor name to search");
+        System.out.println("Transactions for vendor: " + vendor);
 
-        
+        boolean found = false;//Track if we found any matching transactions
+
+        //In this line it will find and show all transactions matching that vendor
+        for (Transaction t : transactions) {
+            if (t.getVendor().equalsIgnoreCase(vendor)) {
+                System.out.println(t);
+                found = true; //This mark that we found at least one
+            }
+        }
+            if(!found) {
+                System.out.println("Nothing found for that vendor");
+            }
     }
 
 
@@ -232,6 +281,7 @@ public class homeScreen {
     public static ArrayList<Transaction> getTransactionsFromFile() {
         ArrayList<Transaction> transactions = new ArrayList<>();
 
+        //Open the transactions.csv file and create a BufferedReader to read it line by line
         try (FileReader fileReader = new FileReader("transactions.csv");
              BufferedReader br = new BufferedReader(fileReader)) {
 
@@ -272,7 +322,9 @@ public class homeScreen {
             //This line will write a line to the file with all transaction details
             pw.printf("%s|%s|%s|%s|%.2f%n",
                     t.getDate(), t.getTime(), t.getDescription(), t.getVendor(), t.getAmount());
-        } catch (Exception e) {
+        }
+
+        catch (Exception e) {
             System.out.println("Error saving transaction to file.");
         }
     }
