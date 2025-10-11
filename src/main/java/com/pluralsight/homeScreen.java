@@ -159,8 +159,44 @@ public class homeScreen {
 
     //Here it will show the user reports
     private static void showReports() {
-
         System.out.println("User Reports");
+        String reportsMenu = """
+            Reports Menu:
+            1) Month To Date
+            2) Previous Month
+            3) Year To Date
+            4) Previous Year
+            5) Search by Vendor
+            0) Back
+            """;
+
+        while (true) {
+            System.out.println(reportsMenu);
+            String command = ConsoleHelper.promptForString("Enter your command").toUpperCase().trim();
+
+            switch (command) {
+                case "A":
+                    showMonthToDate();
+                    break;
+                case "B":
+                    showPreviousMonth();
+                    break;
+                case "C":
+                    showYearToDate();
+                    break;
+                case "D":
+                    showPreviousYear();
+                    break;
+                case "E":
+                    searchByVendor();
+                    break;
+                case "F":
+                    return; // go back to Ledger menu
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+
     }
 
 
