@@ -34,13 +34,35 @@ public class Transaction {
         return vendor;
     }
 
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
     public double getAmount() {
         return amount;
+
     }
 
     @Override
     public String toString() {
-        return String.format("#%-10d %-18s %10.2f", date,time, description, vendor, amount);
+        return String.format("%s | %s | %s | %s | %.2f", date, time, description, vendor, amount);
     }
+
 
 }

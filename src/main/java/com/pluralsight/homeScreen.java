@@ -1,11 +1,18 @@
 package com.pluralsight;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class homeScreen {
-    private static ArrayList<Transaction> transactions = new ArrayList<>();
+    //Create an ArrayList to hold all transactions
+    public static ArrayList<Transaction> transactions = getTransactionsFromFile();
+
+    //Main menu displayed to the user
     public static void main(String[] args) {
         String mainMenu = """
                 What do you want to do?
@@ -14,8 +21,11 @@ public class homeScreen {
                 L) Ledger
                 X) Exit
                 """;
+        // As long as it true it will keep showing the menu until the user chooses to exit
         while (true) {
+            System.out.println(mainMenu);
             String command = ConsoleHelper.promptForString("Enter your command (D, P, L, X)").toUpperCase();
+
             switch (command) {
                 case "D":
                     addDeposit();
@@ -24,47 +34,74 @@ public class homeScreen {
                     makePayment();
                     break;
                 case "L":
-                    displayLedger();
+                    displayLedger(); // open the ledger menu
                     break;
                 case "X":
                     System.out.println("Exiting application.");
                     return;
                 default:
                     System.out.println("INVALID COMMAND! Please select a valid option.");
-                    break;
             }
         }
     }
+
+
+    //Here is the method to add a deposit transaction
     private static void addDeposit() {
         System.out.println("Add Deposit");
+
+        // Ask user for transaction details
         LocalDate date = ConsoleHelper.promptForDate("Enter date (YYYY-MM-DD)");
         LocalTime time = ConsoleHelper.promptForTime("Enter time (HH:MM:SS)");
-       String description = ConsoleHelper.promptForString("Enter description");
-       String vendor = ConsoleHelper.promptForString("Enter vendor");
-       double amount = ConsoleHelper.promptForDouble("Enter deposit amount");
-
-        Transaction newTransaction = new Transaction(date, time, description, vendor, amount);
-
-    }
-    private static void makePayment() {
-        LocalDate date = ConsoleHelper.promptForDate("Enter date (YYYY-MM-DD)");
-        LocalTime time = ConsoleHelper.promptForTime("Enter time (HH:MM:SS)");
-        String vendor = ConsoleHelper.promptForString("Enter vendor");
         String description = ConsoleHelper.promptForString("Enter description");
-        double amount = ConsoleHelper.promptForDouble("Enter payment amount");
-        Transaction tx = new Transaction(date, time, vendor, Math.abs(amount), description);
+        String vendor = ConsoleHelper.promptForString("Enter vendor");
+        double amount = ConsoleHelper.promptForDouble("Enter deposit amount");
+
+        amount = Math.abs(amount); // This is to make sure the deposit is positive
+
+        // This creates and store new transaction
+        Transaction newTransaction = new Transaction(date, time, description, vendor, amount);
+        transactions.add(newTransaction);
+        saveTransaction(newTransaction);
+        System.out.println("Your deposit added successfully!");
     }
 
+
+    //This method to record a payment transaction
+    private static void makePayment() {
+        System.out.println("Make your Payment");
+
+        // Ask user for transaction details
+        LocalDate date = ConsoleHelper.promptForDate("Enter date (YYYY-MM-DD)");
+        LocalTime time = ConsoleHelper.promptForTime("Enter time (HH:MM:SS)");
+        String description = ConsoleHelper.promptForString("Enter description");
+        String vendor = ConsoleHelper.promptForString("Enter vendor");
+        double amount = ConsoleHelper.promptForDouble("Enter payment amount");
+
+        amount = -Math.abs(amount); // This is to make sure the payment is negative
+
+        //This creates and store new transaction
+        Transaction newTransaction = new Transaction(date, time, description, vendor, amount);
+        transactions.add(newTransaction);
+        saveTransaction(newTransaction);
+        System.out.println("Your payment recorded successfully!");
+    }
+
+
+    //Here it will display the ledger menu for viewing or reporting transactions
     private static void displayLedger() {
         String ledgerMenu = """
-        A) All Entries
-        D) Deposits Only
-        P) Payments Only
-        R) Reports
-        H) Home
-        """;
+                A) All Entries
+                D) Deposits Only
+                P) Payments Only
+                R) Reports
+                H) Home
+                """;
+
         while (true) {
+            System.out.println(ledgerMenu);
             String command = ConsoleHelper.promptForString("Enter your command (A, D, P, R, H)").toUpperCase();
+
             switch (command) {
                 case "A":
                     displayAllEntries();
@@ -79,20 +116,108 @@ public class homeScreen {
                     showReports();
                     break;
                 case "H":
-                    return;
+                    return;//Go back to home to the main menu
                 default:
-                    System.out.println("INVALID COMMAND! Please select a valid option");
-                    break;
+                    System.out.println("INVALID COMMAND! Please select a valid option.");
             }
         }
     }
 
+
+    //Here it will show all transactions
     private static void displayAllEntries() {
+        System.out.println("User all Entries:");
+        displayTransactions(transactions);
     }
+
+
+    //Here it will show only deposits
     private static void displayDepositsOnly() {
+        System.out.println("User Deposits:");
+        ArrayList<Transaction> deposits = new ArrayList<>();
+        for (Transaction t : transactions) {
+            if (t.getAmount() > 0) { //This will only show the positive amounts
+                deposits.add(t);
+            }
+        }
+        displayTransactions(deposits);
     }
+
+
+    //Here it will show only payments
     private static void displayPaymentsOnly() {
+        System.out.println("User Payments:");
+        ArrayList<Transaction> payments = new ArrayList<>();
+        for (Transaction t : transactions) {
+            if (t.getAmount() < 0) {//This will only show the negative amounts
+                payments.add(t);
+            }
+        }
+        displayTransactions(payments);
     }
+
+
+    //Here it will show the user reports
     private static void showReports() {
+
+        System.out.println("User Reports");
+    }
+
+
+    //Here where it reads transactions from the CSV file
+    public static ArrayList<Transaction> getTransactionsFromFile() {
+        ArrayList<Transaction> transactions = new ArrayList<>();
+
+        try (FileReader fileReader = new FileReader("transactions.csv");
+             BufferedReader br = new BufferedReader(fileReader)) {
+
+            String lineFromFile;
+
+            while ((lineFromFile = br.readLine()) != null) {
+                if (lineFromFile.startsWith("date")) continue;//This helps to skip the header row in the transactions.cvs file
+
+                //Split each line by the | symbol
+                String[] parts = lineFromFile.split("\\|");
+                if (parts.length < 5) continue;
+
+                //Turn the text into the right types (date, time, number)
+                LocalDate date = LocalDate.parse(parts[0]);
+                LocalTime time = LocalTime.parse(parts[1]);
+                String description = parts[2];
+                String vendor = parts[3];
+                double amount = Double.parseDouble(parts[4]);
+
+                //This line of code added new transaction and add it to the list
+                Transaction t = new Transaction(date, time, description, vendor, amount);
+                transactions.add(t);
+            }
+        } catch (Exception e) {
+            System.out.println("There was an error reading the transactions.cvs file.");
+            e.printStackTrace();
+        }
+
+        return transactions;
+    }
+
+
+    //Save a single transaction to the CSV file
+    private static void saveTransaction(Transaction t) {
+        try (FileWriter fw = new FileWriter("transactions.csv", true);
+             PrintWriter pw = new PrintWriter(fw)) {
+
+            //This line will write a line to the file with all transaction details
+            pw.printf("%s|%s|%s|%s|%.2f%n",
+                    t.getDate(), t.getTime(), t.getDescription(), t.getVendor(), t.getAmount());
+        } catch (Exception e) {
+            System.out.println("Error saving transaction to file.");
+        }
+    }
+
+
+    //Display all transactions in a list
+    private static void displayTransactions(ArrayList<Transaction> list) {
+        for (Transaction t : list) {
+            System.out.println(t);
+        }
     }
 }
