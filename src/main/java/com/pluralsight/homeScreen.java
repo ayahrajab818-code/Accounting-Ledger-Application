@@ -172,31 +172,59 @@ public class homeScreen {
 
         while (true) {
             System.out.println(reportsMenu);
-            String command = ConsoleHelper.promptForString("Enter your command").toUpperCase().trim();
+            String command = ConsoleHelper.promptForString("Enter your command (1, 2, 3, 4, 5, 0)");
 
             switch (command) {
-                case "A":
+                case "1":
                     showMonthToDate();
                     break;
-                case "B":
+                case "2":
                     showPreviousMonth();
                     break;
-                case "C":
+                case "3":
                     showYearToDate();
                     break;
-                case "D":
+                case "4":
                     showPreviousYear();
                     break;
-                case "E":
+                case "5":
                     searchByVendor();
                     break;
-                case "F":
-                    return; // go back to Ledger menu
+                case "0":
+                    return; //Go back to Ledger menu
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
         }
 
+    }
+
+
+
+    //Show all transactions from this month
+    private static void showMonthToDate() {
+    }
+
+
+    //Show all transactions from the previous month
+    private static void showPreviousMonth() {
+    }
+
+
+    //Show all transactions from this year
+    private static void showYearToDate() {
+    }
+
+
+    //Show all transactions from the previous year
+    private static void showPreviousYear() {
+    }
+
+
+    //Search by vendor name
+    private static void searchByVendor() {
+
+        
     }
 
 
