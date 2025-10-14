@@ -382,6 +382,8 @@ public class HomeScreen {
         }
     }
 
+
+    //Calculate the balance
     private static double calculateBalance() {
         double balance = 0;
         for (Transaction tx : transactions) {
