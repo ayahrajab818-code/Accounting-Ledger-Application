@@ -9,21 +9,24 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class homeScreen {
+public class HomeScreen {
     //Create an ArrayList to hold all transactions
     public static ArrayList<Transaction> transactions = getTransactionsFromFile();
 
 
-
- //-----Main Menu Methode----//
+    //-----Main Menu Methode----//
     //Main menu displayed to the user
     public static void main(String[] args) {
         String mainMenu = """
-                What do you want to do?
-                D) Add Deposit
-                P) Make Payment (Debit)
-                L) Ledger
-                X) Exit
+                
+                //------------Main Menu------------//
+                    ========================
+                    What do you want to do?
+                    D) Add Deposit
+                    P) Make Payment (Debit)
+                    L) Ledger
+                    X) Exit
+                    =======================
                 """;
         // As long as it true it will keep showing the menu until the user chooses to exit
         while (true) {
@@ -58,15 +61,16 @@ public class homeScreen {
         LocalTime time = ConsoleHelper.promptForTime("Enter time (HH:MM:SS)");
         String description = ConsoleHelper.promptForString("Enter description");
         String vendor = ConsoleHelper.promptForString("Enter vendor");
-        double amount = ConsoleHelper.promptForDouble("Enter deposit amount");
+        double amount = ConsoleHelper.promptForDouble("Enter deposit amount $ ");
 
         amount = Math.abs(amount); // This is to make sure the deposit is positive
 
         // This creates and store new transaction
         Transaction newTransaction = new Transaction(date, time, description, vendor, amount);
         transactions.add(newTransaction);
-        saveTransaction(newTransaction);
+        writeTransactionToFile(newTransaction);
         System.out.println("Funds Successfully Deposited!");
+        System.out.printf("New Balance: $%.2f%n", calculateBalance());
     }
 
     //This method to record a payment transaction
@@ -78,29 +82,32 @@ public class homeScreen {
         LocalTime time = ConsoleHelper.promptForTime("Enter time (HH:MM:SS)");
         String description = ConsoleHelper.promptForString("Enter description");
         String vendor = ConsoleHelper.promptForString("Enter vendor");
-        double amount = ConsoleHelper.promptForDouble("Enter payment amount $");
+        double amount = ConsoleHelper.promptForDouble("Enter payment amount $ ");
 
         amount = -Math.abs(amount); // This is to make sure the payment is negative
 
         //This creates and store new transaction
         Transaction newTransaction = new Transaction(date, time, description, vendor, amount);
         transactions.add(newTransaction);
-        saveTransaction(newTransaction);
+        writeTransactionToFile(newTransaction);
         System.out.println("Your payment recorded successfully!");
+        System.out.printf("New Balance: $%.2f%n", calculateBalance());
     }
 
 
-
-
-  //-----Ledger Menu Methode-----///
+    //-----Ledger Menu Methode-----///
     //Here it will display the ledger menu for viewing or reporting transactions
     private static void displayLedger() {
         String ledgerMenu = """
-                A) All Entries
-                D) Deposits Only
-                P) Payments Only
-                R) Reports
-                H) Home
+                
+                //-----------ledger Menu------------// 
+                           ================
+                           A) All Entries
+                           D) Deposits Only
+                           P) Payments Only
+                           R) Reports
+                           H) Home
+                           ================
                 """;
         // As long as it true it will keep showing the menu until the user chooses to exit
         while (true) {
@@ -131,52 +138,55 @@ public class homeScreen {
     //Here it will show all transactions
     private static void displayAllEntries() {
         System.out.println("User all Entries:");
-        sortTransactionsByNewest(transactions);
+        System.out.println(" New Balance " + calculateBalance());
+        sortTransactionsByDateNewestFirst(transactions);
         displayTransactions(transactions);
     }
+
 
     //Here it will show only deposits
     private static void displayDepositsOnly() {
         System.out.println("User Deposits:");
-        ArrayList<Transaction> deposits = new ArrayList<>();
-        for (Transaction t : transactions) {
-            if (t.getAmount() > 0) { //This will only show the positive amounts
-                deposits.add(t);
+        ArrayList<Transaction> depositsList = new ArrayList<>();
+        for (Transaction tx : transactions) {
+            if (tx.getAmount() > 0) { //This will only show the positive amounts
+                depositsList.add(tx);
             }
         }
-        sortTransactionsByNewest(deposits);
-        displayTransactions(deposits);
+        sortTransactionsByDateNewestFirst(depositsList);
+        displayTransactions(depositsList);
     }
 
     //Here it will show only payments
     private static void displayPaymentsOnly() {
         System.out.println("User Payments:");
-        ArrayList<Transaction> payments = new ArrayList<>();
-        for (Transaction t : transactions) {
-            if (t.getAmount() < 0) {//This will only show the negative amounts
-                payments.add(t);
+        ArrayList<Transaction> paymentsList = new ArrayList<>();
+        for (Transaction tx : transactions) {
+            if (tx.getAmount() < 0) {//This will only show the negative amounts
+                paymentsList.add(tx);
             }
         }
-        sortTransactionsByNewest(payments);
-        displayTransactions(payments);
+        sortTransactionsByDateNewestFirst(paymentsList);
+        displayTransactions(paymentsList);
     }
 
 
-
-
-//-----Reports Menu Methode------//
+    //-----Reports Menu Methode------//
     //Here it will show the user reports
     private static void showReports() {
         System.out.println("User Reports");
         String reportsMenu = """
-            Reports Menu:
-            1) Month To Date
-            2) Previous Month
-            3) Year To Date
-            4) Previous Year
-            5) Search by Vendor
-            0) Back
-            """;
+                //-----------Reports Menu------------//
+                 ========================
+                 1) Month To Date        ]
+                 2) Previous Month       ]
+                 3) Year To Date         ]
+                 4) Previous Year        ]
+                 5) Search by Vendor     ]
+                 0) Back                 ]
+                 =========================
+                """;
+
         // As long as it true it will keep showing the menu until the user chooses to exit
         while (true) {
             System.out.println(reportsMenu);
@@ -211,17 +221,20 @@ public class homeScreen {
     private static void showMonthToDate() {
         System.out.println("Month to date Transactions:");
         LocalDate today = LocalDate.now();// Get today's date
-
+        ArrayList<Transaction> monthList = new ArrayList<>();
         //Go through each transaction in the list
-        for (Transaction t : transactions) {
+        for (Transaction tx : transactions) {
 
             // Check if the transaction happened in the current year AND current month
-            if (t.getDate().getYear() == today.getYear() && t.getDate().getMonth() == today.getMonth()) {
+            if (tx.getDate().getYear() == today.getYear() && tx.getDate().getMonth() == today.getMonth()) {
 
                 // Print the transaction if it matches
-                System.out.println(t);
+                System.out.println(tx);
             }
         }
+        sortTransactionsByDateNewestFirst(monthList);
+        displayTransactions(monthList);
+
     }
 
     //Show all transactions from the previous month
@@ -231,13 +244,16 @@ public class homeScreen {
         //Get the date exactly one month before today
         LocalDate lastMonth = LocalDate.now().minusMonths(1);
 
-        //Check each transaction and print it if it happened in the previous month
-        for (Transaction t : transactions) {
-            if (t.getDate().getYear() == lastMonth.getYear() && t.getDate().getMonth() == lastMonth.getMonth()) {
-                System.out.println(t);
-            }
+        ArrayList<Transaction> previousMonthList = new ArrayList<>();
 
+        //Check each transaction and print it if it happened in the previous month
+        for (Transaction tx : transactions) {
+            if (tx.getDate().getYear() == lastMonth.getYear() && tx.getDate().getMonth() == lastMonth.getMonth()) {
+                System.out.println(tx);
+            }
         }
+        sortTransactionsByDateNewestFirst(previousMonthList);
+        displayTransactions(previousMonthList);
     }
 
     //Show all transactions from this year
@@ -247,12 +263,16 @@ public class homeScreen {
         //This line gets the current year so the program can filter transactions that happened this year only.
         int currentYear = LocalDate.now().getYear();
 
+        ArrayList<Transaction> YearToDateList = new ArrayList<>();
+
         //Go through all transactions and print only the ones from this year
-        for (Transaction t : transactions) {
-            if (t.getDate().getYear() == currentYear) {
-                System.out.println(t);
+        for (Transaction tx : transactions) {
+            if (tx.getDate().getYear() == currentYear) {
+                System.out.println(tx);
             }
         }
+        sortTransactionsByDateNewestFirst(YearToDateList);
+        displayTransactions(YearToDateList);
     }
 
     //Show all transactions from the previous year
@@ -262,9 +282,9 @@ public class homeScreen {
         //Get the previous year
         int lastYear = LocalDate.now().getYear() - 1;
 
-        for (Transaction t : transactions) {
-            if (t.getDate().getYear() == lastYear) {
-                System.out.println(t);
+        for (Transaction tx : transactions) {
+            if (tx.getDate().getYear() == lastYear) {
+                System.out.println(tx);
             }
         }
     }
@@ -277,18 +297,16 @@ public class homeScreen {
         boolean found = false;//Track if we found any matching transactions
 
         //In this line it will find and show all transactions matching that vendor
-        for (Transaction t : transactions) {
-            if (t.getVendor().equalsIgnoreCase(vendor)) {
-                System.out.println(t);
+        for (Transaction tx : transactions) {
+            if (tx.getVendor().equalsIgnoreCase(vendor)) {
+                System.out.println(tx);
                 found = true; //This mark that we found at least one
             }
         }
-            if(!found) {
-                System.out.println("Nothing found for that vendor");
-            }
+        if (!found) {
+            System.out.println("Nothing found for that vendor");
+        }
     }
-
-
 
 
     //Here where it reads transactions from the CSV file
@@ -303,10 +321,13 @@ public class homeScreen {
 
             // Read each line from the file until the end is reached
             while ((lineFromFile = br.readLine()) != null) {
-                if (lineFromFile.startsWith("date")) continue;//This helps to skip the header row in the transactions.cvs file
+                if (lineFromFile.startsWith("date"))
+                    continue;//This helps to skip the header row in the transactions.cvs file
 
                 //Split each line by the | symbol
                 String[] parts = lineFromFile.split("\\|");
+
+                //Skip lines that don't have all 5 required fields (date, time, description, vendor, amount)
                 if (parts.length < 5) continue;
 
                 //Turn the text into the right types (date, time, number)
@@ -317,8 +338,8 @@ public class homeScreen {
                 double amount = Double.parseDouble(parts[4]);
 
                 //This line of code added new transaction and add it to the list
-                Transaction t = new Transaction(date, time, description, vendor, amount);
-                transactions.add(t);
+                Transaction tx = new Transaction(date, time, description, vendor, amount);
+                transactions.add(tx);
             }
         } catch (Exception e) {
             System.out.println("There was an error reading the transactions.cvs file.");
@@ -330,24 +351,42 @@ public class homeScreen {
 
 
     //Save a single transaction to the CSV file
-    private static void saveTransaction(Transaction t) {
+    private static void writeTransactionToFile(Transaction tx) {
 
         //Open the file to add new transactions and write lines to it (true = append mode, so existing data is not erased)
         try (FileWriter fw = new FileWriter("transactions.csv", true);
              PrintWriter pw = new PrintWriter(fw)) {
             pw.printf("%s|%s|%s|%s|%.2f%n",
-                    t.getDate(), t.getTime(), t.getDescription(), t.getVendor(), t.getAmount());
-        }catch (Exception e) {
+                    tx.getDate(), tx.getTime(), tx.getDescription(), tx.getVendor(), tx.getAmount());
+        } catch (Exception e) {
             System.out.println("Error saving transaction to file.");
         }
     }
-    private static void sortTransactionsByNewest(ArrayList<Transaction> list){
-      list.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
+
+
+    //Sort Transactions By Newest
+    private static void sortTransactionsByDateNewestFirst(ArrayList<Transaction> list) {
+        // Sort the transactions so the newest ones come first (by date and time)
+        list.sort(Comparator
+                // Compare by date in reverse order (newest date first)
+                .comparing(Transaction::getDate, Comparator.reverseOrder())
+                // If two transactions have the same date, compare by time in reverse order (latest time first)
+                .thenComparing(Transaction::getTime, Comparator.reverseOrder()));
     }
+
+
     //Display all transactions in a list
     private static void displayTransactions(ArrayList<Transaction> list) {
-        for (Transaction t : list) {
-            System.out.println(t);
+        for (Transaction tx : list) {
+            System.out.println(tx);
         }
+    }
+
+    private static double calculateBalance() {
+        double balance = 0;
+        for (Transaction tx : transactions) {
+            balance += tx.getAmount();
+        }
+        return balance;
     }
 }
