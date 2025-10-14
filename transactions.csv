@@ -13,3 +13,7 @@ date|time|description|vendor|amount
 2025-10-11|06:49|ayah|ikea|19.99
 2025-10-19|06:50|ayah|ikea|-19.00
 2025-12-04|00:00|ikea|ayah|17.00
+2003-12-12|00:00|ikea|ayah|15.00
+2003-12-12|00:00|ikea|ayah|-15.00
+2025-12-12|00:00|paycheck|ayah|200.00
+2024-01-12|00:00|paycheck|ayah|200.00

@@ -7,11 +7,15 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class homeScreen {
     //Create an ArrayList to hold all transactions
     public static ArrayList<Transaction> transactions = getTransactionsFromFile();
 
+
+
+ //-----Main Menu Methode----//
     //Main menu displayed to the user
     public static void main(String[] args) {
         String mainMenu = """
@@ -24,7 +28,7 @@ public class homeScreen {
         // As long as it true it will keep showing the menu until the user chooses to exit
         while (true) {
             System.out.println(mainMenu);
-            String command = ConsoleHelper.promptForString("Enter your command (D, P, L, X)").toUpperCase();
+            String command = ConsoleHelper.promptForString("Enter your command (D, P, L, X)").toUpperCase().trim();
 
             switch (command) {
                 case "D":
@@ -45,7 +49,6 @@ public class homeScreen {
         }
     }
 
-
     //Here is the method to add a deposit transaction
     private static void addDeposit() {
         System.out.println("Add Deposit");
@@ -63,9 +66,8 @@ public class homeScreen {
         Transaction newTransaction = new Transaction(date, time, description, vendor, amount);
         transactions.add(newTransaction);
         saveTransaction(newTransaction);
-        System.out.println("Your deposit added successfully!");
+        System.out.println("Funds Successfully Deposited!");
     }
-
 
     //This method to record a payment transaction
     private static void makePayment() {
@@ -76,7 +78,7 @@ public class homeScreen {
         LocalTime time = ConsoleHelper.promptForTime("Enter time (HH:MM:SS)");
         String description = ConsoleHelper.promptForString("Enter description");
         String vendor = ConsoleHelper.promptForString("Enter vendor");
-        double amount = ConsoleHelper.promptForDouble("Enter payment amount");
+        double amount = ConsoleHelper.promptForDouble("Enter payment amount $");
 
         amount = -Math.abs(amount); // This is to make sure the payment is negative
 
@@ -88,6 +90,9 @@ public class homeScreen {
     }
 
 
+
+
+  //-----Ledger Menu Methode-----///
     //Here it will display the ledger menu for viewing or reporting transactions
     private static void displayLedger() {
         String ledgerMenu = """
@@ -100,7 +105,7 @@ public class homeScreen {
         // As long as it true it will keep showing the menu until the user chooses to exit
         while (true) {
             System.out.println(ledgerMenu);
-            String command = ConsoleHelper.promptForString("Enter your command (A, D, P, R, H)").toUpperCase();
+            String command = ConsoleHelper.promptForString("Enter your command (A, D, P, R, H)").toUpperCase().trim();
 
             switch (command) {
                 case "A":
@@ -123,13 +128,12 @@ public class homeScreen {
         }
     }
 
-
     //Here it will show all transactions
     private static void displayAllEntries() {
         System.out.println("User all Entries:");
+        sortTransactionsByNewest(transactions);
         displayTransactions(transactions);
     }
-
 
     //Here it will show only deposits
     private static void displayDepositsOnly() {
@@ -140,9 +144,9 @@ public class homeScreen {
                 deposits.add(t);
             }
         }
+        sortTransactionsByNewest(deposits);
         displayTransactions(deposits);
     }
-
 
     //Here it will show only payments
     private static void displayPaymentsOnly() {
@@ -153,10 +157,14 @@ public class homeScreen {
                 payments.add(t);
             }
         }
+        sortTransactionsByNewest(payments);
         displayTransactions(payments);
     }
 
 
+
+
+//-----Reports Menu Methode------//
     //Here it will show the user reports
     private static void showReports() {
         System.out.println("User Reports");
@@ -172,7 +180,7 @@ public class homeScreen {
         // As long as it true it will keep showing the menu until the user chooses to exit
         while (true) {
             System.out.println(reportsMenu);
-            String command = ConsoleHelper.promptForString("Enter your command (1, 2, 3, 4, 5, 0)");
+            String command = ConsoleHelper.promptForString("Enter your command (1, 2, 3, 4, 5, 0)").trim();
 
             switch (command) {
                 case "1":
@@ -199,8 +207,6 @@ public class homeScreen {
 
     }
 
-
-
     //Show all transactions from this month
     private static void showMonthToDate() {
         System.out.println("Month to date Transactions:");
@@ -218,7 +224,6 @@ public class homeScreen {
         }
     }
 
-
     //Show all transactions from the previous month
     private static void showPreviousMonth() {
         System.out.println("Previous Month Transactions:");
@@ -235,10 +240,9 @@ public class homeScreen {
         }
     }
 
-
     //Show all transactions from this year
     private static void showYearToDate() {
-        System.out.println("Year-To-Date Transactions:");
+        System.out.println("Year To Date Transactions:");
 
         //This line gets the current year so the program can filter transactions that happened this year only.
         int currentYear = LocalDate.now().getYear();
@@ -250,7 +254,6 @@ public class homeScreen {
             }
         }
     }
-
 
     //Show all transactions from the previous year
     private static void showPreviousYear() {
@@ -265,7 +268,6 @@ public class homeScreen {
             }
         }
     }
-
 
     //Search by vendor name
     private static void searchByVendor() {
@@ -285,6 +287,8 @@ public class homeScreen {
                 System.out.println("Nothing found for that vendor");
             }
     }
+
+
 
 
     //Here where it reads transactions from the CSV file
@@ -331,18 +335,15 @@ public class homeScreen {
         //Open the file to add new transactions and write lines to it (true = append mode, so existing data is not erased)
         try (FileWriter fw = new FileWriter("transactions.csv", true);
              PrintWriter pw = new PrintWriter(fw)) {
-
-            //This line will write a line to the file with all transaction details
             pw.printf("%s|%s|%s|%s|%.2f%n",
                     t.getDate(), t.getTime(), t.getDescription(), t.getVendor(), t.getAmount());
-        }
-
-        catch (Exception e) {
+        }catch (Exception e) {
             System.out.println("Error saving transaction to file.");
         }
     }
-
-
+    private static void sortTransactionsByNewest(ArrayList<Transaction> list){
+      list.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
+    }
     //Display all transactions in a list
     private static void displayTransactions(ArrayList<Transaction> list) {
         for (Transaction t : list) {
