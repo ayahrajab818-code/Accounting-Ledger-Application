@@ -34,26 +34,6 @@ public class Transaction {
         return vendor;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setVendor(String vendor) {
-        this.vendor = vendor;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
     public double getAmount() {
         return amount;
 
