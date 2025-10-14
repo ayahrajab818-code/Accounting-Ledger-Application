@@ -107,6 +107,8 @@ You can pick:
 
 They’re shown from newest to oldest so you can easily see your latest activity first.
 
+<img width="1082" height="614" alt="image" src="https://github.com/user-attachments/assets/5846c086-6942-4f92-8e1f-90a872fb97f0" />
+
 
 ### 5. Run Reports
 
