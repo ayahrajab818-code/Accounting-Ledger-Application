@@ -58,7 +58,7 @@ public class HomeScreen {
 
         // Ask user for transaction details
         LocalDate date = ConsoleHelper.promptForDate("Enter date (YYYY-MM-DD)");
-        LocalTime time = ConsoleHelper.promptForTime("Enter time (HH:MM:SS)");
+        LocalTime time = ConsoleHelper.promptForTime("Enter time (HH:MM:SS a )");
         String description = ConsoleHelper.promptForString("Enter description");
         String vendor = ConsoleHelper.promptForString("Enter vendor");
         double amount = ConsoleHelper.promptForDouble("Enter deposit amount $ ");
@@ -142,7 +142,6 @@ public class HomeScreen {
         sortTransactionsByDateNewestFirst(transactions);
         displayTransactions(transactions);
     }
-
 
     //Here it will show only deposits
     private static void displayDepositsOnly() {
@@ -307,6 +306,7 @@ public class HomeScreen {
             System.out.println("Nothing found for that vendor");
         }
     }
+
 
 
     //Here where it reads transactions from the CSV file

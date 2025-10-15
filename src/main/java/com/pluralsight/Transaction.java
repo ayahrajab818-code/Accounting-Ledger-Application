@@ -2,6 +2,7 @@ package com.pluralsight;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Transaction {
     private LocalDate date;
@@ -41,8 +42,11 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return String.format("%s | %s | %s | %s | %.2f", date, time, description, vendor, amount);
+        //Convert 24hour LocalTime to 12hour with AM/PM
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
+        //Everything lines up evenly in neat columns because of the %-20 spacing.
+        return String.format("%-20s | %-20s | %-20s | %-20s | %-20.2f",
+                date, time.format(formatter), description, vendor, amount);
     }
-
 
 }
