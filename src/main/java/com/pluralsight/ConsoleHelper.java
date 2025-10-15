@@ -7,10 +7,21 @@ import java.util.Scanner;
 public class ConsoleHelper {
     private static Scanner scanner = new Scanner(System.in);
 
+    //This method asks the user to type a whole number (integer) and returns it
     public static int promptForInt(String prompt) {
+
+        //Display a message asking the user for input
         System.out.print(prompt + ": ");
+
+        //Read the number the user types from the keyboard
+        //'scanner.nextInt()' waits for the user to type a number and press Enter
+        //We assign it to 'result' so we can store and use that number later
         int result = scanner.nextInt();
+
+        //Clear the leftover newline character after the user presses Enter
+        //(this prevents the next input from being skipped)
         scanner.nextLine();
+        //Return the number the user entered to the main program
         return result;
     }
 

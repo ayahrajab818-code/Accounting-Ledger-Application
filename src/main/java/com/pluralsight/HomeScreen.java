@@ -297,7 +297,9 @@ public class HomeScreen {
 
         //In this line it will find and show all transactions matching that vendor
         for (Transaction tx : transactions) {
-            if (tx.getVendor().equalsIgnoreCase(vendor)) {
+            if (tx.getVendor()//look inside this box(tx) and tell me the vendor
+                    .equalsIgnoreCase(vendor)) {
+
                 System.out.println(tx);
                 found = true; //This mark that we found at least one
             }
@@ -385,10 +387,14 @@ public class HomeScreen {
 
     //Calculate the balance
     private static double calculateBalance() {
+        //Start with a balance of 0
         double balance = 0;
+        //Go through each transaction in the transactions list
         for (Transaction tx : transactions) {
+            //Add this transaction's amount to the balance
             balance += tx.getAmount();
         }
+        //Return the final balance after adding all transactions
         return balance;
     }
 }
