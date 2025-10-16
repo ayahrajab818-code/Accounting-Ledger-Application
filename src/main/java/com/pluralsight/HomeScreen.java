@@ -31,7 +31,7 @@ public class HomeScreen {
         // As long as it true it will keep showing the menu until the user chooses to exit
         while (true) {
             System.out.println(mainMenu);
-            String command = ConsoleHelper.promptForString("Enter your command (D, P, L, X)").toUpperCase().trim();
+            String command = ConsoleHelper.promptForString("Enter your command (D, P, L, X)").toUpperCase();
 
             switch (command) {
                 case "D":
@@ -58,7 +58,7 @@ public class HomeScreen {
 
         //Ask user for transaction details
         LocalDate date = ConsoleHelper.promptForDate("Enter date (YYYY-MM-DD)");
-        LocalTime time = ConsoleHelper.promptForTime("Enter time (HH:MM:SS a )");
+        LocalTime time = ConsoleHelper.promptForTime("Enter time (HH:MM:SS )");
         String description = ConsoleHelper.promptForString("Enter description");
         String vendor = ConsoleHelper.promptForString("Enter vendor");
         double amount = ConsoleHelper.promptForDouble("Enter deposit amount $ ");

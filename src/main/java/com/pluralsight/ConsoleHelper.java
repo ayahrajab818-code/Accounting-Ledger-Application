@@ -39,9 +39,23 @@ public class ConsoleHelper {
 
 
     public static String promptForString(String prompt) {
-        System.out.print(prompt + ": ");
-        return scanner.nextLine();
-    }
+        while (true) {
+            try {
+                System.out.print(prompt + ": ");
+                String input = scanner.nextLine().trim(); // Read input and remove extra spaces
+
+                if (input.isEmpty()) {  // Check if user entered nothing
+                    System.out.println("Invalid input! Please enter text.");
+                } else {
+                    return input;  // Return valid text
+                }
+
+            } catch (Exception e) {
+                System.out.println("Something went wrong. Please try again.");
+            }
+        }
+        }
+
     public static LocalDate promptForDate(String prompt){
 
         while(true){
