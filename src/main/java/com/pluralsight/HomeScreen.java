@@ -63,7 +63,7 @@ public class HomeScreen {
         String vendor = ConsoleHelper.promptForString("Enter vendor");
         double amount = ConsoleHelper.promptForDouble("Enter deposit amount $ ");
 
-        amount = Math.abs(amount); // This is to make sure the deposit is positive
+        amount = Math.abs(amount);//Make sure amount is always positive even if the user entered a negative number.
 
         // This creates and store new transaction
         Transaction newTransaction = new Transaction(date, time, description, vendor, amount);
@@ -84,7 +84,7 @@ public class HomeScreen {
         String vendor = ConsoleHelper.promptForString("Enter vendor");
         double amount = ConsoleHelper.promptForDouble("Enter payment amount $ ");
 
-        amount = -Math.abs(amount); // This is to make sure the payment is negative
+        amount = -Math.abs(amount); //Make sure amount is always negative even if the user entered a positive number.
 
         //This creates and store new transaction
         Transaction newTransaction = new Transaction(date, time, description, vendor, amount);
