@@ -37,7 +37,7 @@ public class ConsoleHelper {
         }
     }
 
-
+        //I used a string here because it's a plain text
     public static String promptForString(String prompt) {
         while (true) {
             try {
@@ -69,6 +69,7 @@ public class ConsoleHelper {
             }
         }
     }
+    //I used localTime here because is a spacial java class the understanding times
     public static LocalTime promptForTime(String prompt){
         while (true) {
             try {
