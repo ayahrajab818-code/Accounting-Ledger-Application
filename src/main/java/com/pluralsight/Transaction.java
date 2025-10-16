@@ -39,6 +39,15 @@ public class Transaction {
         return amount;
 
     }
+    //Returns true if this transaction represents a deposit (a positive amount)
+    public boolean isDeposit() {
+        return amount > 0;
+    }
+
+    //Returns true if this transaction represents a payment (a negative amount)
+    public boolean isPayment() {
+        return amount < 0;
+    }
 
     @Override
     public String toString() {

@@ -56,7 +56,7 @@ public class HomeScreen {
     private static void addDeposit() {
         System.out.println("Add Deposit");
 
-        // Ask user for transaction details
+        //Ask user for transaction details
         LocalDate date = ConsoleHelper.promptForDate("Enter date (YYYY-MM-DD)");
         LocalTime time = ConsoleHelper.promptForTime("Enter time (HH:MM:SS a )");
         String description = ConsoleHelper.promptForString("Enter description");
@@ -139,20 +139,21 @@ public class HomeScreen {
     private static void displayAllEntries() {
         System.out.println("User all Entries:");
         System.out.println(" New Balance " + calculateBalance());
-        sortTransactionsByDateNewestFirst(transactions);
+        sortTransactionsByDateTimeNewestFirst(transactions);
         displayTransactions(transactions);
     }
 
     //Here it will show only deposits
     private static void displayDepositsOnly() {
         System.out.println("User Deposits:");
+        //Creates an empty list to store all deposit transactions
         ArrayList<Transaction> depositsList = new ArrayList<>();
         for (Transaction tx : transactions) {
-            if (tx.getAmount() > 0) { //This will only show the positive amounts
-                depositsList.add(tx);
+            if (tx.isDeposit()) { //If this transaction is a deposit (amount > 0)
+                depositsList.add(tx);//add it to the deposits list
             }
         }
-        sortTransactionsByDateNewestFirst(depositsList);
+        sortTransactionsByDateTimeNewestFirst(depositsList);
         displayTransactions(depositsList);
     }
 
@@ -161,11 +162,11 @@ public class HomeScreen {
         System.out.println("User Payments:");
         ArrayList<Transaction> paymentsList = new ArrayList<>();
         for (Transaction tx : transactions) {
-            if (tx.getAmount() < 0) {//This will only show the negative amounts
-                paymentsList.add(tx);
+            if (tx.isPayment()) {//checks if the transaction is a payment (amount < 0)
+                paymentsList.add(tx);//puts that transaction into the list of payments
             }
         }
-        sortTransactionsByDateNewestFirst(paymentsList);
+        sortTransactionsByDateTimeNewestFirst(paymentsList);
         displayTransactions(paymentsList);
     }
 
@@ -231,7 +232,7 @@ public class HomeScreen {
                 System.out.println(tx);
             }
         }
-        sortTransactionsByDateNewestFirst(monthList);
+        sortTransactionsByDateTimeNewestFirst(monthList);
         displayTransactions(monthList);
 
     }
@@ -251,7 +252,7 @@ public class HomeScreen {
                 System.out.println(tx);
             }
         }
-        sortTransactionsByDateNewestFirst(previousMonthList);
+        sortTransactionsByDateTimeNewestFirst(previousMonthList);
         displayTransactions(previousMonthList);
     }
 
@@ -270,7 +271,7 @@ public class HomeScreen {
                 System.out.println(tx);
             }
         }
-        sortTransactionsByDateNewestFirst(YearToDateList);
+        sortTransactionsByDateTimeNewestFirst(YearToDateList);
         displayTransactions(YearToDateList);
     }
 
@@ -367,7 +368,7 @@ public class HomeScreen {
 
 
     //Sort Transactions By Newest
-    private static void sortTransactionsByDateNewestFirst(ArrayList<Transaction> list) {
+    private static void sortTransactionsByDateTimeNewestFirst(ArrayList<Transaction> list) {
         // Sort the transactions so the newest ones come first (by date and time)
         list.sort(Comparator
                 // Compare by date in reverse order (newest date first)
