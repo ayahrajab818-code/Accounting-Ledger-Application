@@ -140,3 +140,4 @@ Handles Errors: If something goes wrong (for example, if the file is missing or 
 When you press X, the program stops running, but your data stays saved in the file for the next time you open it.
 
 <img width="711" height="186" alt="image" src="https://github.com/user-attachments/assets/96a08872-653e-46e3-8484-081ccd6e351d" />
+
