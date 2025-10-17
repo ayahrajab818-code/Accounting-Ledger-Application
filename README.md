@@ -1,6 +1,6 @@
 # Accounting Ledger Appliction
 
-You can think of this project as your own personal money tracker. It functions similarly to a digital checkbook in that it helps you keep track of all the money you make and spend.
+You can think of this project as your own personal money tracker. It functions similar to a digital checkbook in that it helps you keep track of all the money you make and spend.
 
 
 -----
