@@ -1,7 +1,6 @@
 # Accounting Ledger Appliction
 
-This program is like your personal money tracker.
-It helps you keep track of all the money you earn and spend just like a digital checkbook.
+You can think of this project as your own personal money tracker. It functions similarly to a digital checkbook in that it helps you keep track of all the money you make and spend.
 
 
 -----
